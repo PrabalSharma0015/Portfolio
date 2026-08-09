@@ -2,13 +2,27 @@
 
 import React, { Suspense, useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Float } from "@react-three/drei";
+import { OrbitControls, useGLTF, Float, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 
 interface SkillLogo3DViewerProps {
   modelUrl: string;
   customScale?: number;
   initialRotation?: [number, number, number];
+}
+
+function LoaderOverlay() {
+  const { progress } = useProgress();
+  if (progress >= 100) return null;
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-sm z-10 gap-2">
+      <div className="w-6 h-6 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+      <span className="font-mono text-[9px] text-accent tracking-widest uppercase font-bold">
+        LOADING 3D // {Math.round(progress)}%
+      </span>
+    </div>
+  );
 }
 
 function AutoNormalizedModel({
@@ -165,6 +179,7 @@ export default function SkillLogo3DViewer({
 
   return (
     <div className="w-full h-[180px] sm:h-[200px] relative rounded-lg overflow-hidden border border-accent/30 bg-gradient-to-b from-surface/80 via-background/90 to-surface/90 shadow-lg">
+      <LoaderOverlay />
       <Canvas camera={{ position: [0, 0, 4.2], fov: 45 }}>
         {/* Studio Ambient & 360 Lights */}
         <ambientLight intensity={3.0} />
