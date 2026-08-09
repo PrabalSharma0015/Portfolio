@@ -96,10 +96,10 @@ export default function Skills3DGrid() {
           <span>3D INTERACTIVE TECH MATRIX // REAL-TIME ASSETS</span>
         </div>
         <h3 className="text-h2 uppercase tracking-tight text-foreground font-bold">
-          3D Technology Logos
+          Technologies & Tools I Use
         </h3>
         <p className="text-body-sm text-foreground-secondary max-w-2xl font-mono text-xs">
-          Interact directly with the 3D models of the primary engines, tools, and hardware frameworks powering my XR portfolio.
+          Interact directly with the 3D models of the primary engines, frameworks, and hardware powering my XR development workflow.
         </p>
       </div>
 
