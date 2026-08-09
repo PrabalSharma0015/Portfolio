@@ -164,36 +164,57 @@ export default function SkillLogo3DViewer({
   initialRotation = [0, 0, 0],
 }: SkillLogo3DViewerProps) {
   const [mounted, setMounted] = useState(false);
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="w-full h-[180px] sm:h-[200px] flex items-center justify-center rounded-lg border border-accent/30 bg-surface/40 font-mono text-xs text-foreground-muted">
-        <span>LOADING 3D...</span>
-      </div>
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "250px" } // Preload when card is 250px near viewport
     );
-  }
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="w-full h-[180px] sm:h-[200px] relative rounded-lg overflow-hidden border border-accent/30 bg-gradient-to-b from-surface/80 via-background/90 to-surface/90 shadow-lg">
-      <LoaderOverlay />
-      <Canvas camera={{ position: [0, 0, 4.2], fov: 45 }}>
-        {/* Studio Ambient & 360 Lights */}
-        <ambientLight intensity={3.0} />
-        <directionalLight position={[5, 8, 5]} intensity={3.0} />
-        <directionalLight position={[-5, -4, -4]} intensity={2.0} color="#ffffff" />
-        <pointLight position={[0, 0, 4]} intensity={3.0} color="#ffffff" />
-        <pointLight position={[0, -2, 2]} intensity={2.0} color="#ffffff" />
+    <div
+      ref={containerRef}
+      className="w-full h-[180px] sm:h-[200px] relative rounded-lg overflow-hidden border border-accent/30 bg-gradient-to-b from-surface/80 via-background/90 to-surface/90 shadow-lg"
+    >
+      {!mounted || !inView ? (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-surface/40 font-mono text-xs text-foreground-muted gap-2">
+          <div className="w-5 h-5 rounded-full border-2 border-accent/40 border-t-accent animate-spin" />
+          <span className="text-[10px] tracking-widest text-accent/80">3D READY</span>
+        </div>
+      ) : (
+        <>
+          <LoaderOverlay />
+          <Canvas camera={{ position: [0, 0, 4.2], fov: 45 }}>
+            {/* Studio Ambient & 360 Lights */}
+            <ambientLight intensity={3.0} />
+            <directionalLight position={[5, 8, 5]} intensity={3.0} />
+            <directionalLight position={[-5, -4, -4]} intensity={2.0} color="#ffffff" />
+            <pointLight position={[0, 0, 4]} intensity={3.0} color="#ffffff" />
+            <pointLight position={[0, -2, 2]} intensity={2.0} color="#ffffff" />
 
-        <Suspense fallback={null}>
-          <AutoNormalizedModel url={modelUrl} customScale={customScale} initialRotation={initialRotation} />
-        </Suspense>
+            <Suspense fallback={null}>
+              <AutoNormalizedModel url={modelUrl} customScale={customScale} initialRotation={initialRotation} />
+            </Suspense>
 
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={2.0} />
-      </Canvas>
+            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={2.0} />
+          </Canvas>
+        </>
+      )}
 
       <div className="absolute bottom-2 right-3 text-[9px] font-mono text-technical text-accent/80 uppercase pointer-events-none tracking-widest bg-background/80 px-2 py-0.5 rounded border border-accent/20">
         3D MODEL // DRAG TO ROTATE
