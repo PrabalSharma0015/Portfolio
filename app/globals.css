@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: #050505;
+  --color-background-secondary: #0a0a0a;
+  
+  --color-surface: #111111;
+  --color-surface-hover: #1a1a1a;
+  --color-surface-elevated: #171717;
+
+  --color-foreground: #f0f0f0;
+  --color-foreground-secondary: #a3a3a3;
+  --color-foreground-muted: #737373;
+  --color-foreground-disabled: #404040;
+
+  --color-border: #262626;
+  --color-border-subtle: #1a1a1a;
+  --color-border-hover: #404040;
+
+  /* Restrained electric cyan / blue-green accent */
+  --color-accent: #00e5ff;
+  --color-accent-muted: rgba(0, 229, 255, 0.15);
+  --color-accent-strong: #00ffff;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base resets & typography scale */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    @apply antialiased selection:bg-accent selection:text-black;
+  }
+  
+  /* Typography Scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-foreground;
+  }
+
+  .text-display {
+    @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter;
+  }
+  .text-h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+  }
+  .text-h2 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+  .text-h3 {
+    @apply text-2xl md:text-3xl font-semibold;
+  }
+  .text-h4 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+  .text-body-lg {
+    @apply text-lg text-foreground-secondary leading-relaxed max-w-[65ch];
+  }
+  .text-body {
+    @apply text-base text-foreground-secondary leading-relaxed max-w-[65ch];
+  }
+  .text-body-sm {
+    @apply text-sm text-foreground-muted leading-relaxed;
+  }
+  .text-caption {
+    @apply text-xs text-foreground-muted;
+  }
+  .text-technical {
+    @apply font-mono text-xs uppercase tracking-widest text-accent;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Utilities for visual elements */
+@layer utilities {
+  .glass-panel {
+    @apply bg-surface-elevated/40 backdrop-blur-md border border-border-subtle rounded-md;
+  }
+  
+  .glass-panel-hover {
+    @apply hover:bg-surface-elevated/60 hover:border-border transition-all duration-300;
+  }
+
+  /* Grids */
+  .bg-grid-technical {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, var(--color-border-subtle) 1px, transparent 1px),
+                      linear-gradient(to bottom, var(--color-border-subtle) 1px, transparent 1px);
+  }
+  .bg-grid-fine {
+    background-size: 8px 8px;
+    background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
